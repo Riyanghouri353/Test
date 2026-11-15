@@ -1,14 +1,14 @@
 # Image generation timing
 
 - **model**: stabilityai/sd-turbo
-- **prompt**: Portrait of a beautiful young adult woman with long wavy brown hair and warm brown eyes, gentle smile, golden hour sunlight, soft bokeh garden background, elegant, photorealistic, highly detailed
+- **prompt**: A beautiful young adult woman standing gracefully in a lush flower garden, elegant long floral dress, golden hour sunlight, vibrant roses and greenery all around, full body portrait, photorealistic, highly detailed, sharp focus, professional photography, high quality, 8k detail
 - **steps**: 4
-- **size**: 512
+- **size**: 768
 - **seed**: 42
-- **model_load_seconds**: 1.7
-- **generate_seconds**: 42.0
-- **total_seconds**: 43.7
-- **peak_ram_mb**: 6754.4
+- **model_load_seconds**: 1.4
+- **generate_seconds**: 82.8
+- **total_seconds**: 84.2
+- **peak_ram_mb**: 7806.0
 - **cpus**: 4
 - **output**: output/image.png
-- **output_bytes**: 474496
+- **output_bytes**: 1327360
