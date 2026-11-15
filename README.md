@@ -54,6 +54,18 @@ Each run writes `voice/audio.wav` (24 kHz mono WAV), `voice/TIMING.md`
 console log, committed even on failure). Long text is split into
 sentences and joined with short pauses.
 
+### Chatterbox (bigger, more natural, much slower)
+
+Chatterbox (Resemble AI, ~1B parameters) is the bigger model: more
+human-like tone and emotion control, at the cost of ~3.2 GB of
+weights and minutes of CPU time per clip. Same pattern, separate
+files: `chatterbox.py` + `voice-chatterbox.txt` + the
+"Generate voice (Chatterbox, CPU)" workflow. Output lands in
+`voice-chatterbox/` with its own `TIMING.md`; the console log is
+`chatterbox.log`. Default voice (no reference clip); `exaggeration`
+and `cfg_weight` tune emotion and pace. CPU-only torch is installed
+first so pip does not pull the ~2.5 GB CUDA wheel.
+
 ## Swapping models
 
 Change `DEFAULT_MODEL` in `generate.py`. Turbo models automatically

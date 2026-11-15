@@ -1,0 +1,74 @@
+name: Generate voice (Chatterbox, CPU)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/speak-chatterbox.yml"
+      - "chatterbox.py"
+      - "voice-chatterbox.txt"
+  workflow_dispatch:
+    inputs:
+      text:
+        description: "Text to speak"
+        required: false
+        default: ""
+      exaggeration:
+        description: "Emotion/exaggeration (0.25-1.0)"
+        required: false
+        default: "0.5"
+      cfg_weight:
+        description: "Pace control (0.2-1.0)"
+        required: false
+        default: "0.5"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: voice-gen-chatterbox
+  cancel-in-progress: false
+
+jobs:
+  speak:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          # chatterbox-tts pins torch 2.6.0 + numpy<2 on Python <3.13
+          python-version: "3.12"
+
+      - name: Cache Chatterbox model
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-chatterbox-v1
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          # CPU-only torch first: the default wheel bundles CUDA (~2.5 GB)
+          pip install torch==2.6.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cpu
+          pip install chatterbox-tts==0.1.7 soundfile==0.14.0
+
+      - name: Generate voice
+        run: |
+          set -o pipefail
+          if [ -n "${{ inputs.text }}" ]; then
+            python3 chatterbox.py --text "${{ inputs.text }}" --exaggeration "${{ inputs.exaggeration || '0.5' }}" --cfg-weight "${{ inputs.cfg_weight || '0.5' }}" 2>&1 | tee chatterbox.log
+          else
+            python3 chatterbox.py 2>&1 | tee chatterbox.log
+          fi
+
+      - name: Commit result
+        if: always()
+        run: |
+          git config user.name "img-gen-bot"
+          git config user.email "img-gen-bot@users.noreply.github.com"
+          [ -f chatterbox.log ] && git add chatterbox.log || true
+          [ -d voice-chatterbox ] && git add voice-chatterbox/ || true
+          git diff --cached --quiet || git commit -m "Generated Chatterbox voice [skip ci]"
+          git push
