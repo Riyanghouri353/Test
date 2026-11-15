@@ -65,8 +65,23 @@ def main():
     if not turbo:
         from diffusers import DPMSolverMultistepScheduler
 
-        pipe.scheduler = DPMSolverMultistepScheduler.from_config(
-            pipe.scheduler.config, use_karras_sigmas=True
+        # Build the scheduler explicitly: inheriting the model's own
+        # scheduler config via from_config can carry an incompatible
+        # algorithm_type (DreamShaper ships DEIS; DPM++ rejects
+        # final_sigmas_type="zero" with algorithm_type="deis" and the
+        # run dies before generating anything).
+        pipe.scheduler = DPMSolverMultistepScheduler(
+            num_train_timesteps=1000,
+            beta_start=0.00085,
+            beta_end=0.012,
+            beta_schedule="scaled_linear",
+            solver_order=2,
+            prediction_type="epsilon",
+            thresholding=False,
+            algorithm_type="dpmsolver++",
+            solver_type="midpoint",
+            lower_order_final=True,
+            use_karras_sigmas=True,
         )
     t_load = time.time() - t0
 

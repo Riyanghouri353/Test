@@ -26,6 +26,9 @@ Each run writes:
 
 - `output/image.png` — the generated image (latest run wins)
 - `output/TIMING.md` — model load time, generation time, peak RAM
+- `generate.log` — the full console log of the latest run, committed
+  even when the run fails (GitHub hides Actions logs from signed-out
+  viewers, so the log file is how failures get diagnosed)
 
 The run commits these back with `[skip ci]`, so result commits never
 trigger another run.
