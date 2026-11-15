@@ -6,14 +6,22 @@
 Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
 /opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/diffusers/utils/deprecation_utils.py:23: FutureWarning: `torch_dtype` is deprecated and will be removed in version 1.0.0. Please use `dtype` instead.
   deprecate("torch_dtype", "1.0.0", _TORCH_DTYPE_DEPRECATION_MESSAGE)
-Fetching 15 files:   0%|          | 0/15 [00:00<?, ?it/s]Fetching 15 files:  60%|██████    | 9/15 [00:00<00:00, 89.10it/s]Fetching 15 files:  93%|█████████▎| 14/15 [00:19<00:00, 89.10it/s]Fetching 15 files: 100%|██████████| 15/15 [00:20<00:00,  1.65s/it]Fetching 15 files: 100%|██████████| 15/15 [00:20<00:00,  1.35s/it]
+Fetching 18 files:   0%|          | 0/18 [00:00<?, ?it/s]Fetching 18 files:  11%|█         | 2/18 [00:00<00:00, 18.52it/s]Fetching 18 files:  44%|████▍     | 8/18 [00:00<00:00, 38.00it/s]Fetching 18 files:  78%|███████▊  | 14/18 [00:00<00:00, 43.40it/s]Fetching 18 files:  94%|█████████▍| 17/18 [00:19<00:00, 43.40it/s]Fetching 18 files: 100%|██████████| 18/18 [00:40<00:00,  3.38s/it]Fetching 18 files: 100%|██████████| 18/18 [00:40<00:00,  2.23s/it]
 Loading pipeline components...:   0%|          | 0/7 [00:00<?, ?it/s]
-Loading weights:   0%|          | 0/396 [00:00<?, ?it/s][A
-Loading weights:  64%|██████▍   | 253/396 [00:00<00:00, 2526.46it/s][ALoading weights: 100%|██████████| 396/396 [00:00<00:00, 2654.85it/s]
-Loading pipeline components...:  29%|██▊       | 2/7 [00:00<00:00,  7.54it/s]Loading pipeline components...:  43%|████▎     | 3/7 [00:00<00:01,  2.69it/s]
-Loading weights:   0%|          | 0/196 [00:00<?, ?it/s][ALoading weights: 100%|██████████| 196/196 [00:00<00:00, 3890.14it/s]
-Loading pipeline components...:  71%|███████▏  | 5/7 [00:01<00:00,  4.89it/s]CLIPFeatureExtractor appears to have been deprecated in transformers. Using CLIPImageProcessor instead.
-Loading pipeline components...: 100%|██████████| 7/7 [00:01<00:00,  5.93it/s]
-  0%|          | 0/25 [00:00<?, ?it/s]  4%|▍         | 1/25 [00:09<03:42,  9.27s/it]  8%|▊         | 2/25 [00:18<03:34,  9.35s/it] 12%|█▏        | 3/25 [00:27<03:24,  9.30s/it] 16%|█▌        | 4/25 [00:37<03:15,  9.29s/it] 20%|██        | 5/25 [00:46<03:05,  9.27s/it] 24%|██▍       | 6/25 [00:55<02:56,  9.27s/it] 28%|██▊       | 7/25 [01:04<02:46,  9.25s/it] 32%|███▏      | 8/25 [01:14<02:36,  9.23s/it] 36%|███▌      | 9/25 [01:23<02:27,  9.23s/it] 40%|████      | 10/25 [01:32<02:18,  9.24s/it] 44%|████▍     | 11/25 [01:41<02:09,  9.25s/it] 48%|████▊     | 12/25 [01:51<02:00,  9.28s/it] 52%|█████▏    | 13/25 [02:00<01:51,  9.31s/it] 56%|█████▌    | 14/25 [02:09<01:42,  9.31s/it] 60%|██████    | 15/25 [02:19<01:32,  9.29s/it] 64%|██████▍   | 16/25 [02:28<01:23,  9.28s/it] 68%|██████▊   | 17/25 [02:37<01:14,  9.28s/it] 72%|███████▏  | 18/25 [02:46<01:04,  9.28s/it] 76%|███████▌  | 19/25 [02:56<00:55,  9.26s/it] 80%|████████  | 20/25 [03:05<00:46,  9.27s/it] 84%|████████▍ | 21/25 [03:14<00:37,  9.29s/it] 88%|████████▊ | 22/25 [03:24<00:27,  9.30s/it] 92%|█████████▏| 23/25 [03:33<00:18,  9.30s/it] 96%|█████████▌| 24/25 [03:42<00:09,  9.30s/it]100%|██████████| 25/25 [03:52<00:00,  9.29s/it]100%|██████████| 25/25 [03:52<00:00,  9.28s/it]
-TIMING {"model": "Lykon/dreamshaper-8", "prompt": "A beautiful young adult woman standing gracefully in a lush flower garden, elegant long floral dress, golden hour sunlight, vibrant roses and greenery all around, full body portrait, photorealistic, highly detailed, sharp focus, professional photography, high quality, 8k detail", "negative_prompt": "ugly, deformed, blurry, low quality, duplicate, two people, extra limbs, bad anatomy, watermark, text", "steps": 25, "guidance": 7.5, "size": 512, "seed": 42, "model_load_seconds": 21.6, "generate_seconds": 247.6, "total_seconds": 269.2, "peak_ram_mb": 6989.8, "cpus": 4, "output": "output/image.png", "output_bytes": 483283}
-Saved output/image.png
+Loading weights:   0%|          | 0/517 [00:00<?, ?it/s][A
+Loading weights:  23%|██▎       | 120/517 [00:00<00:00, 1146.54it/s][A
+Loading weights:  54%|█████▍    | 280/517 [00:00<00:00, 1374.80it/s][A
+Loading weights:  85%|████████▌ | 442/517 [00:00<00:00, 1483.38it/s][ALoading weights: 100%|██████████| 517/517 [00:00<00:00, 1472.75it/s]
+Loading pipeline components...:  29%|██▊       | 2/7 [00:00<00:01,  4.20it/s]Loading pipeline components...:  71%|███████▏  | 5/7 [00:02<00:01,  1.81it/s]
+Loading weights:   0%|          | 0/196 [00:00<?, ?it/s][A
+Loading weights:  37%|███▋      | 72/196 [00:00<00:00, 670.38it/s][ALoading weights: 100%|██████████| 196/196 [00:00<00:00, 1536.59it/s]
+Loading pipeline components...: 100%|██████████| 7/7 [00:03<00:00,  2.38it/s]Loading pipeline components...: 100%|██████████| 7/7 [00:03<00:00,  2.33it/s]
+Traceback (most recent call last):
+  File "/home/runner/work/Test/Test/generate.py", line 154, in <module>
+    main()
+  File "/home/runner/work/Test/Test/generate.py", line 87, in main
+    pipe.enable_vae_slicing()
+    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/diffusers/configuration_utils.py", line 175, in __getattr__
+    raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")
+AttributeError: 'StableDiffusionXLPipeline' object has no attribute 'enable_vae_slicing'
