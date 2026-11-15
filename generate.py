@@ -33,7 +33,7 @@ def main():
     ap.add_argument("--prompt", default=None)
     ap.add_argument("--out", default="output/image.png")
     ap.add_argument("--steps", type=int, default=4)
-    ap.add_argument("--size", type=int, default=512)
+    ap.add_argument("--size", type=int, default=768)
     ap.add_argument("--seed", type=int, default=42)
     args = ap.parse_args()
     prompt = resolve_prompt(args.prompt)

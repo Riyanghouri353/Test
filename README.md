@@ -18,7 +18,7 @@ the runs do not touch the account's private-repo Actions minutes.
 
 Each run writes:
 
-- `output/image.png` — the generated 512×512 image (latest run wins)
+- `output/image.png` — the generated 768×768 image (latest run wins)
 - `output/TIMING.md` — model load time, generation time, peak RAM
 
 The run commits these back with `[skip ci]`, so result commits never
