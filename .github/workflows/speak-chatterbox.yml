@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/speak-chatterbox.yml"
-      - "chatterbox.py"
+      - "speak_chatterbox.py"
       - "voice-chatterbox.txt"
   workflow_dispatch:
     inputs:
@@ -58,9 +58,9 @@ jobs:
         run: |
           set -o pipefail
           if [ -n "${{ inputs.text }}" ]; then
-            python3 chatterbox.py --text "${{ inputs.text }}" --exaggeration "${{ inputs.exaggeration || '0.5' }}" --cfg-weight "${{ inputs.cfg_weight || '0.5' }}" 2>&1 | tee chatterbox.log
+            python3 speak_chatterbox.py --text "${{ inputs.text }}" --exaggeration "${{ inputs.exaggeration || '0.5' }}" --cfg-weight "${{ inputs.cfg_weight || '0.5' }}" 2>&1 | tee chatterbox.log
           else
-            python3 chatterbox.py 2>&1 | tee chatterbox.log
+            python3 speak_chatterbox.py 2>&1 | tee chatterbox.log
           fi
 
       - name: Commit result

@@ -59,7 +59,7 @@ sentences and joined with short pauses.
 Chatterbox (Resemble AI, ~1B parameters) is the bigger model: more
 human-like tone and emotion control, at the cost of ~3.2 GB of
 weights and minutes of CPU time per clip. Same pattern, separate
-files: `chatterbox.py` + `voice-chatterbox.txt` + the
+files: `speak_chatterbox.py` + `voice-chatterbox.txt` + the
 "Generate voice (Chatterbox, CPU)" workflow. Output lands in
 `voice-chatterbox/` with its own `TIMING.md`; the console log is
 `chatterbox.log`. Default voice (no reference clip); `exaggeration`
