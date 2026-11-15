@@ -1,0 +1,71 @@
+name: Generate voice (Kokoro, CPU)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/speak.yml"
+      - "speak.py"
+      - "voice.txt"
+  workflow_dispatch:
+    inputs:
+      text:
+        description: "Text to speak"
+        required: false
+        default: ""
+      voice:
+        description: "Kokoro voice id (am_adam, am_michael, am_onyx)"
+        required: false
+        default: "am_adam"
+      speed:
+        description: "Speed (0.5-2.0)"
+        required: false
+        default: "1.0"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: voice-gen
+  cancel-in-progress: false
+
+jobs:
+  speak:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache Kokoro model
+        uses: actions/cache@v4
+        with:
+          path: kokoro-model
+          key: kokoro-v1.0
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install kokoro-onnx==0.6.1 onnxruntime==1.32.0 soundfile==0.14.0 numpy==2.5.4
+
+      - name: Generate voice
+        run: |
+          set -o pipefail
+          if [ -n "${{ inputs.text }}" ]; then
+            python3 speak.py --text "${{ inputs.text }}" --voice "${{ inputs.voice || 'am_adam' }}" --speed "${{ inputs.speed || '1.0' }}" 2>&1 | tee speak.log
+          else
+            python3 speak.py 2>&1 | tee speak.log
+          fi
+
+      - name: Commit result
+        if: always()
+        run: |
+          git config user.name "img-gen-bot"
+          git config user.email "img-gen-bot@users.noreply.github.com"
+          git add speak.log
+          [ -d voice ] && git add voice/ || true
+          git diff --cached --quiet || git commit -m "Generated voice [skip ci]"
+          git push

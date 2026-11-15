@@ -1,7 +1,8 @@
 # Image generation on GitHub Actions
 
 Runs a Stable Diffusion model on the free GitHub-hosted CPU runner
-and commits the result to `output/`.
+and commits the result to `output/`. It also runs a Kokoro voice
+model the same way — see Voice generation below.
 
 This repo is public, so standard runners are free and unlimited and
 the runs do not touch the account's private-repo Actions minutes.
@@ -34,6 +35,24 @@ Each run writes:
 
 The run commits these back with `[skip ci]`, so result commits never
 trigger another run.
+
+## Voice generation
+
+Kokoro-82M (`kokoro-onnx`, int8, ~120 MB) turns text into
+natural-sounding speech on the same CPU runner — no API key, no
+quota. Default voice is `am_adam` (man, steady/clear); `am_michael`
+(deeper/slower) and `am_onyx` (deepest/fastest) are one-setting
+alternatives.
+
+- **Push text:** edit `voice.txt` and push — the run speaks that text.
+  Pushing `speak.py` or the workflow also triggers a run.
+- **Manual:** Actions tab → "Generate voice (Kokoro, CPU)" →
+  Run workflow → type any text, voice, and speed.
+
+Each run writes `voice/audio.wav` (24 kHz mono WAV), `voice/TIMING.md`
+(download/load/synth time, duration, peak RAM), and `speak.log` (full
+console log, committed even on failure). Long text is split into
+sentences and joined with short pauses.
 
 ## Swapping models
 
