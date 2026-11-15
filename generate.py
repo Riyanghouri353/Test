@@ -84,7 +84,11 @@ def main():
     ).to("cpu")
     if xl:
         pipe.enable_attention_slicing()
-        pipe.enable_vae_slicing()
+        # VAE slicing lives on the VAE itself, not the XL pipeline
+        # (pipe.enable_vae_slicing() raises AttributeError on
+        # StableDiffusionXLPipeline in current diffusers).
+        if hasattr(pipe.vae, "enable_slicing"):
+            pipe.vae.enable_slicing()
     if not turbo:
         from diffusers import DPMSolverMultistepScheduler
 
