@@ -8,9 +8,11 @@ the runs do not touch the account's private-repo Actions minutes.
 
 ## Current model
 
-`Lykon/dreamshaper-8` — SD 1.5 based, 25 steps, guidance 7.5,
-DPM++ 2M Karras sampler, 512×512 (its native size — larger sizes
-risk duplicated figures).
+`RunDiffusion/juggernaut-xl-v9` — SDXL-based, tuned for photorealistic
+portraits. 25 steps, guidance 7.5, DPM++ 2M Karras sampler, 768×768,
+bfloat16 compute (float32 would need ~15 GB of weights alone and
+would not fit the 16 GB runner). Slower than the SD 1.5 models — tens
+of minutes per image on CPU — but visibly better faces and detail.
 
 ## How to run
 
@@ -38,8 +40,13 @@ trigger another run.
 Change `DEFAULT_MODEL` in `generate.py`. Turbo models automatically
 resolve to 4 steps / guidance 0.0 with their built-in scheduler;
 standard models resolve to 25 steps / guidance 7.5 with DPM++ Karras.
-Tried before: `stabilityai/sd-turbo` (fast, 28–42s at 512px, but
-prone to duplicated figures at 768px).
+XL models resolve to 768px + bfloat16; SD 1.5 models to 512px +
+float32. Tried before: `stabilityai/sd-turbo` (fast, 28–42s at 512px,
+but prone to duplicated figures at 768px); `Lykon/dreamshaper-8`
+(clean single figure at 512px in 247.6s, but Riyan judged the quality
+not good enough). Verified open, not yet tried: `stabilityai/sdxl-turbo`
+and `Lykon/dreamshaper-xl-v2-turbo` (fast XL options),
+`segmind/SSD-1B` (distilled SDXL).
 
 ## Specs
 

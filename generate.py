@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
 """Generate one image with a Stable Diffusion model on CPU.
 
-Model is chosen by --model (default: Lykon/dreamshaper-8). Steps and
-guidance resolve per model family: Turbo models use 4 steps /
-guidance 0.0 with their built-in scheduler; everything else uses 25
-steps / guidance 7.5 with DPM++ 2M Karras. Prompt source, in order:
---prompt argument, prompt.txt in the repo root, built-in default.
-Prints a TIMING line, saves the image to output/, and writes
-output/TIMING.md with the same numbers.
+Model is chosen by --model (default: RunDiffusion/juggernaut-xl-v9).
+Steps and guidance resolve per model family: Turbo models use 4 steps
+/ guidance 0.0 with their built-in scheduler; everything else uses 25
+steps / guidance 7.5 with an explicitly built DPM++ 2M Karras
+scheduler. Size resolves per family too: 768px for XL models, 512px
+otherwise. Dtype resolves per family: XL weights are ~6.5 GB in fp16
+and would need ~15 GB cast to float32, which does not fit the 16 GB
+runner next to activations — so XL models run in bfloat16 (half the
+memory, fine quality), while SD 1.5 models keep float32. Prompt
+source, in order: --prompt argument, prompt.txt in the repo root,
+built-in default. Prints a TIMING line, saves the image to output/,
+and writes output/TIMING.md with the same numbers.
 """
 import argparse
 import json
@@ -15,7 +20,7 @@ import os
 import resource
 import time
 
-DEFAULT_MODEL = "Lykon/dreamshaper-8"
+DEFAULT_MODEL = "RunDiffusion/juggernaut-xl-v9"
 DEFAULT_PROMPT = "a cozy bakery storefront at sunrise, warm light, photorealistic"
 DEFAULT_NEGATIVE = "ugly, deformed, blurry, low quality, duplicate, two people, extra limbs, bad anatomy, watermark, text"
 
@@ -37,6 +42,11 @@ def is_turbo(model_id):
     return "turbo" in model_id.lower()
 
 
+def is_xl(model_id):
+    mid = model_id.lower()
+    return "xl" in mid or "ssd-1b" in mid
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default=DEFAULT_MODEL)
@@ -45,23 +55,36 @@ def main():
     ap.add_argument("--out", default="output/image.png")
     ap.add_argument("--steps", type=int, default=None)
     ap.add_argument("--guidance", type=float, default=None)
-    ap.add_argument("--size", type=int, default=512)
+    ap.add_argument("--size", type=int, default=None)
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--dtype", default="auto",
+                    choices=["auto", "float32", "bfloat16", "float16"])
     args = ap.parse_args()
     prompt = resolve_prompt(args.prompt)
     turbo = is_turbo(args.model)
+    xl = is_xl(args.model)
     steps = args.steps if args.steps is not None else (4 if turbo else 25)
     guidance = args.guidance if args.guidance is not None else (0.0 if turbo else 7.5)
+    size = args.size if args.size is not None else (768 if xl else 512)
 
     import torch
     from diffusers import AutoPipelineForText2Image
 
-    # fp16 weights cast to float32: same CPU speed as full fp32 weights,
-    # half the download and disk. The 14 GB runner disk stays safe.
+    if args.dtype == "auto":
+        dtype = torch.bfloat16 if xl else torch.float32
+    else:
+        dtype = getattr(torch, args.dtype)
+
+    # fp16 weight files, cast to the compute dtype: half the download
+    # and disk of fp32 weights. XL in bfloat16 keeps weights ~7.4 GB
+    # so the run fits the 16 GB runner; SD 1.5 keeps float32.
     t0 = time.time()
     pipe = AutoPipelineForText2Image.from_pretrained(
-        args.model, torch_dtype=torch.float32, variant="fp16"
+        args.model, torch_dtype=dtype, variant="fp16"
     ).to("cpu")
+    if xl:
+        pipe.enable_attention_slicing()
+        pipe.enable_vae_slicing()
     if not turbo:
         from diffusers import DPMSolverMultistepScheduler
 
@@ -92,8 +115,8 @@ def main():
         negative_prompt=args.negative,
         num_inference_steps=steps,
         guidance_scale=guidance,
-        height=args.size,
-        width=args.size,
+        height=size,
+        width=size,
         generator=generator,
     ).images[0]
     t_gen = time.time() - t1
@@ -108,8 +131,9 @@ def main():
         "negative_prompt": args.negative,
         "steps": steps,
         "guidance": guidance,
-        "size": args.size,
+        "size": size,
         "seed": args.seed,
+        "dtype": str(dtype).replace("torch.", ""),
         "model_load_seconds": round(t_load, 1),
         "generate_seconds": round(t_gen, 1),
         "total_seconds": round(t_load + t_gen, 1),
