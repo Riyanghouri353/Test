@@ -1,4 +1,4 @@
-name: Generate image (SD-Turbo, CPU)
+name: Generate image (SD, CPU)
 
 on:
   push:
@@ -14,9 +14,9 @@ on:
         required: false
         default: "a cozy bakery storefront at sunrise, warm light, photorealistic"
       steps:
-        description: "Inference steps (1-4)"
+        description: "Inference steps (4 for Turbo, 25 for standard models)"
         required: false
-        default: "4"
+        default: "25"
 
 permissions:
   contents: write
@@ -46,7 +46,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/huggingface
-          key: hf-sd-turbo-v1
+          key: hf-models-v2
+          restore-keys: hf-sd-turbo-v1
 
       - name: Install dependencies
         run: |
@@ -57,9 +58,9 @@ jobs:
       - name: Generate image
         run: |
           if [ -n "${{ inputs.prompt }}" ]; then
-            python3 generate.py --prompt "${{ inputs.prompt }}" --steps "${{ inputs.steps || '4' }}"
+            python3 generate.py --prompt "${{ inputs.prompt }}" --steps "${{ inputs.steps || '25' }}"
           else
-            python3 generate.py --steps "${{ inputs.steps || '4' }}"
+            python3 generate.py
           fi
 
       - name: Commit result
