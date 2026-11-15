@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Generate one image with SD-Turbo on CPU.
 
-Prints a TIMING line with model-load and generation seconds, saves the
-image to output/, and writes output/TIMING.md with the same numbers.
+Prompt source, in order: --prompt argument, prompt.txt in the repo
+root, built-in default. Prints a TIMING line with model-load and
+generation seconds, saves the image to output/, and writes
+output/TIMING.md with the same numbers.
 """
 import argparse
 import json
@@ -10,15 +12,31 @@ import os
 import resource
 import time
 
+DEFAULT_PROMPT = "a cozy bakery storefront at sunrise, warm light, photorealistic"
+
+
+def resolve_prompt(explicit):
+    if explicit:
+        return explicit
+    try:
+        with open("prompt.txt") as f:
+            text = f.read().strip()
+            if text:
+                return text
+    except FileNotFoundError:
+        pass
+    return DEFAULT_PROMPT
+
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--prompt", default="a cozy bakery storefront at sunrise, warm light, photorealistic")
+    ap.add_argument("--prompt", default=None)
     ap.add_argument("--out", default="output/image.png")
     ap.add_argument("--steps", type=int, default=4)
     ap.add_argument("--size", type=int, default=512)
     ap.add_argument("--seed", type=int, default=42)
     args = ap.parse_args()
+    prompt = resolve_prompt(args.prompt)
 
     import torch
     from diffusers import AutoPipelineForText2Image
@@ -34,7 +52,7 @@ def main():
     generator = torch.Generator(device="cpu").manual_seed(args.seed)
     t1 = time.time()
     image = pipe(
-        prompt=args.prompt,
+        prompt=prompt,
         num_inference_steps=args.steps,
         guidance_scale=0.0,
         height=args.size,
@@ -49,7 +67,7 @@ def main():
 
     report = {
         "model": "stabilityai/sd-turbo",
-        "prompt": args.prompt,
+        "prompt": prompt,
         "steps": args.steps,
         "size": args.size,
         "seed": args.seed,

@@ -8,8 +8,9 @@ the runs do not touch the account's private-repo Actions minutes.
 
 ## How to run
 
-- **Automatic:** any push that changes `generate.py` or the workflow
-  runs one generation with the default prompt.
+- **Push a prompt:** edit `prompt.txt` and push — the run generates
+  one image from that prompt. Pushing `generate.py` or the workflow
+  also triggers a run with the current `prompt.txt`.
 - **Manual:** Actions tab → "Generate image (SD-Turbo, CPU)" →
   Run workflow → type any prompt and step count (1–4).
 
@@ -17,7 +18,7 @@ the runs do not touch the account's private-repo Actions minutes.
 
 Each run writes:
 
-- `output/image.png` — the generated 512×512 image
+- `output/image.png` — the generated 512×512 image (latest run wins)
 - `output/TIMING.md` — model load time, generation time, peak RAM
 
 The run commits these back with `[skip ci]`, so result commits never

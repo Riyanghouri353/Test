@@ -6,6 +6,7 @@ on:
     paths:
       - ".github/workflows/generate.yml"
       - "generate.py"
+      - "prompt.txt"
   workflow_dispatch:
     inputs:
       prompt:
@@ -55,9 +56,11 @@ jobs:
 
       - name: Generate image
         run: |
-          python3 generate.py \
-            --prompt "${{ inputs.prompt || 'a cozy bakery storefront at sunrise, warm light, photorealistic' }}" \
-            --steps "${{ inputs.steps || '4' }}"
+          if [ -n "${{ inputs.prompt }}" ]; then
+            python3 generate.py --prompt "${{ inputs.prompt }}" --steps "${{ inputs.steps || '4' }}"
+          else
+            python3 generate.py --steps "${{ inputs.steps || '4' }}"
+          fi
 
       - name: Commit result
         run: |
